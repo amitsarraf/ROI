@@ -13,7 +13,7 @@ const RED          = "#e53935";
 const GREEN        = "#16a34a";
 
 const MONTHS    = ["Jan","Feb","Mar","Apr","May","Jun","Jul","Aug","Sep","Oct","Nov","Dec"];
-const YEARS     = Array.from({ length: 6 }, (_, i) => 2020 + i);
+//const YEARS     = Array.from({ length: 6 }, (_, i) => 2020 + i);
 const BTC_STEPS = [50000, 68762, 100000, 150000, 200000, 300000, 500000];
 
 const CURRENCIES: Record<string, { sym: string; rate: number | null }> = {
@@ -44,12 +44,12 @@ interface DashboardData {
   btcLive:     number;
 }
 
-interface F2PoolInfo {
-  username: string;
-  paid:     number;
-  unpaid:   number;
-  total:    number;
-}
+// interface F2PoolInfo {
+//   username: string;
+//   paid:     number;
+//   unpaid:   number;
+//   total:    number;
+// }
 
 // ─── Helpers ──────────────────────────────────────────────────────────────────
 const daysBetween = (m: number, y: number) =>
@@ -66,30 +66,30 @@ const monthLabel = (m: number, y: number, add: number) => {
 };
 
 // ─── F2Pool fetch helpers (used by SetupScreen — preserved for later use) ─────
-function parseF2PoolUrl(url: string): { username: string; accessKey: string } | null {
-  try {
-    const u = new URL(url);
-    if (!u.hostname.includes("f2pool.com")) return null;
-    const parts     = u.pathname.replace(/\/$/, "").split("/");
-    const username  = parts[parts.length - 1];
-    const accessKey = u.searchParams.get("access_key") || u.searchParams.get("accesskey") || "";
-    if (!username || username.length < 2) return null;
-    return { username, accessKey };
-  } catch { return null; }
-}
+// function parseF2PoolUrl(url: string): { username: string; accessKey: string } | null {
+//   try {
+//     const u = new URL(url);
+//     if (!u.hostname.includes("f2pool.com")) return null;
+//     const parts     = u.pathname.replace(/\/$/, "").split("/");
+//     const username  = parts[parts.length - 1];
+//     const accessKey = u.searchParams.get("access_key") || u.searchParams.get("accesskey") || "";
+//     if (!username || username.length < 2) return null;
+//     return { username, accessKey };
+//   } catch { return null; }
+// }
 
-async function fetchF2PoolBtc(url: string): Promise<F2PoolInfo> {
-  const parsed = parseF2PoolUrl(url);
-  if (!parsed) throw new Error("Not a valid F2Pool URL");
-  const { username, accessKey } = parsed;
-  const apiUrl = `https://api.f2pool.com/bitcoin/${username}${accessKey ? "?access_key=" + accessKey : ""}`;
-  const res    = await fetch(apiUrl);
-  if (!res.ok) throw new Error(`API error ${res.status}`);
-  const data   = await res.json();
-  const paid   = parseFloat(data.paid_mining_earnings ?? data.total_paid ?? 0);
-  const unpaid = parseFloat(data.unpaid_balance       ?? data.balance    ?? 0);
-  return { username, paid, unpaid, total: paid + unpaid };
-}
+// async function fetchF2PoolBtc(url: string): Promise<F2PoolInfo> {
+//   const parsed = parseF2PoolUrl(url);
+//   if (!parsed) throw new Error("Not a valid F2Pool URL");
+//   const { username, accessKey } = parsed;
+//   const apiUrl = `https://api.f2pool.com/bitcoin/${username}${accessKey ? "?access_key=" + accessKey : ""}`;
+//   const res    = await fetch(apiUrl);
+//   if (!res.ok) throw new Error(`API error ${res.status}`);
+//   const data   = await res.json();
+//   const paid   = parseFloat(data.paid_mining_earnings ?? data.total_paid ?? 0);
+//   const unpaid = parseFloat(data.unpaid_balance       ?? data.balance    ?? 0);
+//   return { username, paid, unpaid, total: paid + unpaid };
+// }
 
 // ═══════════════════════════════════════════════════════════════════════════════
 // LOADER SCREEN
